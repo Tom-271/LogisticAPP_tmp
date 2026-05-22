@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@strapi/provider-email-nodemailer": "^5.45.0",
-    "strapi-provider-email-resend": "^1.0.4"
-  }
-}
