@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
 
 const GeMap = dynamic(() => import('@/app/components/GeMap'), {
   ssr: false,
@@ -11,6 +12,33 @@ const GeMap = dynamic(() => import('@/app/components/GeMap'), {
 });
 
 export default function WhoAmI() {
+  const [radius, setRadius] = useState<number>(7500);
+
+  useEffect(() => {
+  const url = process.env.NEXT_PUBLIC_STRAPI_URL ?? 'http://localhost:1337';
+  console.log('🔵 URL:', `${url}/api/map-config`);
+  
+  fetch(`${url}/api/map-config`)
+    .then((r) => {
+      console.log('🔵 Status:', r.status);
+      return r.ok ? r.json() : null;
+    })
+    .then((json) => {
+      console.log('🔵 JSON ricevuto:', json);
+      const r = json?.data?.radius ?? json?.data?.attributes?.radius;
+      console.log('🔵 radius estratto:', r, 'tipo:', typeof r);
+      if (typeof r === 'number') {
+        console.log('🟢 setRadius chiamato con:', r);
+        setRadius(r);
+      } else {
+        console.log('🔴 radius non è un number, fallback a 7500');
+      }
+    })
+    .catch((err) => {
+      console.log('🔴 Errore:', err);
+    });
+}, []);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-900 p-6">
       <div className="max-w-3xl w-full space-y-6">
@@ -32,7 +60,7 @@ export default function WhoAmI() {
 
         <section>
           <h2 className="text-2xl font-medium mb-3">Dove lavoro</h2>
-          <GeMap />
+          <GeMap radius={radius} />
           <p className="text-sm text-gray-600 mt-2">
             L'area evidenziata mostra la zona di copertura del servizio a Genova.
           </p>

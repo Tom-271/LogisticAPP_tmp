@@ -30,6 +30,12 @@ type SemiCircleProps = {
 }
 
 
+
+// c'è il campo radius che rappresenta il raggio del semicerchio e l'abbiamo gestito da database strapi nel campo content-manager
+// in questo modo possiamo modificare il raggio senza dover toccare il codice, ma semplicemente aggiornando il valore nel database
+// soprattutto in vista di eventuali modifiche future alla zona di copertura, che potrebbero richiedere un raggio diverso
+// mi sembra utile dai
+
 function SemiCircle({ center, radius, startAngle, stopAngle, options }: SemiCircleProps) {
   const map = useMap()
 
@@ -53,7 +59,7 @@ function SemiCircle({ center, radius, startAngle, stopAngle, options }: SemiCirc
 }
 
 // === Componente principale ===
-export default function GeMap() {
+export default function GeMap({ radius = 7500 }: { radius?: number }) {
   return (
     <MapContainer
       center={GENOVA}
@@ -66,20 +72,15 @@ export default function GeMap() {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-    
-
-      {/* Semicerchio (mezza torta superiore, 0°-180°) */}
       <SemiCircle
+        key={radius}
         center={[44.3970, 8.9463]}
-        radius={7500}
+        radius={radius}
         startAngle={-78}
         stopAngle={-78 + 180}
         options={{ color: '#3b82f6', fillColor: '#3b82f6', fillOpacity: 0.5 }}
       />
 
-    
-
-      {/* Gruppo verde con popup condiviso */}
       <FeatureGroup pathOptions={fillGreenOptions}>
         <Popup>Popup in FeatureGroup</Popup>
       </FeatureGroup>
