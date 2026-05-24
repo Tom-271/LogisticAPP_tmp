@@ -16,9 +16,10 @@ import EuroIcon from '@mui/icons-material/Euro';
 import CallSplitIcon from '@mui/icons-material/CallSplit';
 import CropFreeIcon from '@mui/icons-material/CropFree';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import FastRewindIcon from '@mui/icons-material/FastRewind';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+
 
 const GeMap = dynamic(() => import('@/app/components/GeMap'), {
   ssr: false,
@@ -91,9 +92,8 @@ export default function WhoAmI() {
             >
               <CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                  <EuroIcon sx={{ color: 'black', fontSize: 32, mr: 1.5 }} />
                   <div className="text-2xl font-extrabold text-blue-700 capitalize">
-                    Tariffe
+                    Tariffario
                   </div>
                 </Box>
                 <Typography component="div" variant="body2" color="text.secondary">
@@ -104,7 +104,7 @@ export default function WhoAmI() {
                     onClick={() => setShowTariffs(!showTariffs)}
                     className="mt-4 flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold cursor-pointer select-none transition-colors"
                   >
-                    <span>{showTariffs ? 'Nascondi parametri' : 'Vedi i parametri di calcolo'}</span>
+                    <span>{showTariffs ? 'Nascondi parametri' : 'Vedi i parametri'}</span>
                     <span className="text-xs">{showTariffs ? '▲' : '▼'}</span>
                   </div>
                 </Typography>
@@ -116,7 +116,7 @@ export default function WhoAmI() {
               <div className="w-full flex justify-center animate-fade-in">
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 w-full">
                   <h3 className="font-bold text-gray-800 mb-4 text-lg">
-                    Parametri di calcolo della tariffa
+                    Parametri utilizzati per il calcolo:
                   </h3>
 
                   <ul className="flex flex-col gap-4">
@@ -124,7 +124,7 @@ export default function WhoAmI() {
                     {/* 1. Distanza tratta */}
                     <li className="flex items-start gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors">
                       <div className="flex-shrink-0 mt-1">
-                        <CallSplitIcon sx={{ color: '#1d4ed8', fontSize: 28 }} />
+                        <NavigateNextIcon sx={{ color: '#1d4ed8', fontSize: 28 }} />
                       </div>
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900 mb-1">
@@ -139,7 +139,7 @@ export default function WhoAmI() {
                     {/* 2. Dimensione del pacco */}
                     <li className="flex items-start gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors">
                       <div className="flex-shrink-0 mt-1">
-                        <CropFreeIcon sx={{ color: '#1d4ed8', fontSize: 28 }} />
+                        <NavigateNextIcon sx={{ color: '#1d4ed8', fontSize: 28 }} />
                       </div>
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900 mb-1">
@@ -154,7 +154,7 @@ export default function WhoAmI() {
                     {/* 3. Preavviso di consegna */}
                     <li className="flex items-start gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors">
                       <div className="flex-shrink-0 mt-1">
-                        <FastRewindIcon sx={{ color: '#1d4ed8', fontSize: 28 }} />
+                        <NavigateNextIcon sx={{ color: '#1d4ed8', fontSize: 28 }} />
                       </div>
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900 mb-1">
@@ -169,7 +169,7 @@ export default function WhoAmI() {
                     {/* 4. Fascia oraria */}
                     <li className="flex items-start gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors">
                       <div className="flex-shrink-0 mt-1">
-                        <AccessTimeIcon sx={{ color: '#1d4ed8', fontSize: 28 }} />
+                        <NavigateNextIcon sx={{ color: '#1d4ed8', fontSize: 28 }} />
                       </div>
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900 mb-1">
@@ -184,7 +184,7 @@ export default function WhoAmI() {
                     {/* 5. Tipologia di servizio */}
                     <li className="flex items-start gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors">
                       <div className="flex-shrink-0 mt-1">
-                        <LocalAtmIcon sx={{ color: '#1d4ed8', fontSize: 28 }} />
+                        <NavigateNextIcon sx={{ color: '#1d4ed8', fontSize: 28 }} />
                       </div>
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900 mb-1">
