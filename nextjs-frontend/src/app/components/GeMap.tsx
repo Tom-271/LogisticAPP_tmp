@@ -70,12 +70,12 @@ function SemiCircle({
 // === Componente principale ===
 export default function GeMap({ radius = 7500 }: { radius?: number }) {
   return (
-    <div className="w-full rounded-2xl overflow-hidden shadow-md">
+    <div className="w-full zindex-0">
       <MapContainer
         center={GENOVA}
         zoom={12}
         scrollWheelZoom={false}
-        style={{ height: '550px', width: '100%' }}
+        style={{ height: '650px', width: '100%' }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -109,7 +109,7 @@ export default function GeMap({ radius = 7500 }: { radius?: number }) {
           weight={1}
         />
 
-       
+
       </MapContainer>
     </div>
   );

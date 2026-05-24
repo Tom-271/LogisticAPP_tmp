@@ -3,6 +3,8 @@ import React from "react";
 import { verifySession } from "../lib/dal";
 import LogOutButton from "./LogOutButton";
 import UserButton from "./UserButton";
+import InfoIcon from '@mui/icons-material/Info';
+import EmailIcon from '@mui/icons-material/Email';
 
 export default async function Navbar() {
   const { isAuth }: any = await verifySession();
@@ -16,16 +18,19 @@ export default async function Navbar() {
 
       <div className="flex items-center gap-3">
         <Link
-          href="/auth/info-tariffe"
-          className="px-4 py-2 rounded-lg text-blue-600 font-medium border border-transparent  transition-colors cursor-pointer"
-        >
-          I nostri servizi
+            href="/auth/info-tariffe"
+            className="px-6 py-4 rounded-lg text-blue-600 font-bold border border-transparent"
+          >
+          I nostri servizi 
+          <InfoIcon className="ml-1 mb-1 text-blue-600" />
         </Link>
         <Link
-          href="/auth/infos"
-          className="px-4 py-2 rounded-lg text-blue-600 font-medium border border-transparent transition-colors cursor-pointer"
-        >
+            href="/auth/infos"
+            className="px-6 py-4 rounded-lg text-blue-600 font-bold border border-transparent"
+          >
           Supporto Clienti
+          <EmailIcon className="ml-1 mb-1 text-blue-600" />
+
         </Link>
 
         {isAuth ? (
