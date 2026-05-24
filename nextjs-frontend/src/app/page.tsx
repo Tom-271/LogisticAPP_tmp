@@ -12,7 +12,7 @@ export default async function Home() {
         </h1>
 
         <Link 
-          href="/auth/whoami" 
+          href="/auth/welcome"
           className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 transition-colors"
         >
           Scopri chi sono!

@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 console.log("ok");
 
 // 1. Specify protected and public routes
-const protectedRoutes = ["/profile", "/auth/change-password"];
+const protectedRoutes = ["/first", "/auth/change-password"];
 const publicRoutes = ["/auth/login", "/auth/signup", "/"];
 
 export default async function middleware(req: NextRequest) {
@@ -23,13 +23,13 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
   }
 
-  // 5. Redirect to /profile if the user is authenticated
+  // 5. Redirect to /first if the user is authenticated
   if (
     isPublicRoute &&
     session?.jwt &&
-    !req.nextUrl.pathname.startsWith("/profile")
+    !req.nextUrl.pathname.startsWith("/first")
   ) {
-    return NextResponse.redirect(new URL("/profile", req.nextUrl));
+    return NextResponse.redirect(new URL("/first", req.nextUrl));
   }
 
   return NextResponse.next();

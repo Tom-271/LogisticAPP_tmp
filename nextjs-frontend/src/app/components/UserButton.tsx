@@ -3,22 +3,36 @@
 import React from "react";
 import { useRouter, usePathname } from "next/navigation";
 
-// Definisci le props che il componente si aspetta
 interface UserButtonProps {
-  username?: string;
+  nome?: string;
+  cognome?: string;
 }
 
-export default function UserButton({ username }: UserButtonProps) {
+export default function UserButton({ nome, cognome }: UserButtonProps) {
   const router = useRouter();
   const pathname = usePathname();
 
-  if (pathname === "/auth/user-page") {
-    return null;
+  if (pathname === "/auth/user-page") return null;
+
+  const isLoggedIn = Boolean(nome || cognome);
+  const initials = `${(nome || "").charAt(0)}${(cognome || "").charAt(0)}`.toUpperCase();
+
+  if (isLoggedIn) {
+    return (
+      <button
+        onClick={() => router.push("/auth/user-page")}
+        aria-label="Vai al profilo"
+        title="Vai al profilo"
+        className="cursor-pointer w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center shadow-md hover:shadow-lg text-white text-sm font-bold tracking-widest transition-all duration-200"
+      >
+        {initials}
+      </button>
+    );
   }
 
   return (
     <button
-      onClick={() => router.push("/auth/user-page")}
+      onClick={() => router.push("/auth/login")}
       className="cursor-pointer w-full sm:w-auto px-6 py-2 bg-gray-600 text-white rounded-lg shadow-md hover:bg-gray-700 transition flex items-center justify-center"
     >
       <svg
@@ -33,7 +47,7 @@ export default function UserButton({ username }: UserButtonProps) {
           clipRule="evenodd"
         />
       </svg>
-      Profilo
+      Login
     </button>
   );
 }

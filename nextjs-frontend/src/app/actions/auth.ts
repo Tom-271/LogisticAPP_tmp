@@ -337,5 +337,5 @@ export async function signinAction(
 
   // create session for user
   await createSession(res.data);
-  redirect("/profile");
+  redirect("/first");
 }
