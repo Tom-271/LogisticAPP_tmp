@@ -21,16 +21,16 @@ export default async function Navbar() {
 
         <div className="flex items-center gap-3">
           <Link
-            href="/auth/info-tariffe"
+            href="/auth/area_operativa"
             className="px-6 py-4 rounded-lg text-blue-600 font-medium border border-transparent"
           >
-            I nostri servizi
+            Dove lavoriamo
           </Link>
           <Link
             href="/auth/infos"
             className="px-6 py-4 rounded-lg text-blue-600 font-medium border border-transparent"
           >
-            Supporto Clienti
+            Tariffe 
           </Link>
 
           {isAuth ? (
