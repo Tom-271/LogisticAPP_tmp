@@ -5,9 +5,8 @@ import Footer from "@/app/components/Footer";
 
 import { verifySession } from "../lib/dal";
 
-export default async function Profile() {
+export default async function MainUtente() {
   const { session: { user } }: any = await verifySession();
-
   return (
     <>
       <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
@@ -15,6 +14,7 @@ export default async function Profile() {
           <p className="text-xl font-semibold text-gray-800 capitalize">
             Benvenuto, {user?.username}!
           </p>
+          <p className="text-sm text-gray-500">Area Utente</p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link
               href="/auth/change-password"
@@ -26,7 +26,6 @@ export default async function Profile() {
           </div>
         </div>
       </div>
-      
       <Footer />
     </>
   );

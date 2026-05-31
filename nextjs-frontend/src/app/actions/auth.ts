@@ -317,7 +317,7 @@ export async function signinAction(
 
     if (userResponse.ok) {
       // Se Strapi non manda il ruolo, forziamo una stringa di avviso per capirlo
-      const userRole = userData.role?.name || "RUOLO_MANCANTE_DA_STRAPI";
+      const userRole = userData.role?.name || "Cliente";
 
       res.data = {
         jwt: jwt,
@@ -337,5 +337,7 @@ export async function signinAction(
 
   // create session for user
   await createSession(res.data);
-  redirect("/first");
+
+  const role = res.data?.user?.role;
+  redirect(role === "Corriere" ? "/main_corriere" : "/main_utente");
 }
