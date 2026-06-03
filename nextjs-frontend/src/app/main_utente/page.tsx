@@ -9,7 +9,7 @@ export default async function MainUtente() {
   const { session: { user } }: any = await verifySession();
   return (
     <>
-      <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
+      <div className="flex min-h-screen items-center justify-center px-4">
         <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md text-center space-y-6">
           <p className="text-xl font-semibold text-gray-800 capitalize">
             Benvenuto, {user?.username}!

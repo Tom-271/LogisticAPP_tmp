@@ -301,7 +301,6 @@ export async function signinAction(
   const jwt = res.data.jwt;
 
   try {
-    console.log("=== 1. CHIAMO STRAPI PER IL RUOLO ===");
     const userResponse = await fetch("http://127.0.0.1:1337/api/users/me?populate=role", {
       method: "GET",
       headers: {
@@ -310,29 +309,22 @@ export async function signinAction(
     });
 
     const userData = await userResponse.json();
-    
-    // QUESTO È IL LOG FONDAMENTALE
-    console.log("=== 2. RISPOSTA GREZZA DA STRAPI ===");
-    console.log(JSON.stringify(userData, null, 2));
 
     if (userResponse.ok) {
-      // Se Strapi non manda il ruolo, forziamo una stringa di avviso per capirlo
       const userRole = userData.role?.name || "Cliente";
 
       res.data = {
         jwt: jwt,
-        user: {   // lui mi permette di fare user.name e non una barcata di passaggi
-          ...res.data.user, 
-          role: userRole,   
-          nome: userData.name,       
-          cognome: userData.surname, 
+        user: {
+          ...res.data.user,
+          role: userRole,
+          nome: userData.name,
+          cognome: userData.surname,
         }
       };
-    } else {
-      console.log("=== ERRORE HTTP STRAPI ===", userResponse.status);
     }
-  } catch (error) {
-    console.error("Errore nel recupero del ruolo da Strapi:", error);
+  } catch {
+    // errore silenzioso: non stampare dettagli che potrebbero esporre token o dati utente
   }
 
   // create session for user

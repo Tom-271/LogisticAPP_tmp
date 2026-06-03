@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { decrypt } from "@/app/lib/session";
 import { cookies } from "next/headers";
 
-// 1. Specify protected and public routes
+// 1. Define protected and public routes
 const protectedRoutes = ["/main_corriere", "/main_utente", "/auth/change-password"];
 const publicRoutes = ["/auth/login", "/auth/signup", "/"];
 

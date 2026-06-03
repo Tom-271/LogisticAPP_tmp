@@ -10,6 +10,8 @@ export default ({ env }) => ({
           user: env('BREVO_SMTP_USER'),
           pass: env('BREVO_SMTP_PASS'),
         },
+        debug: false,
+        logger: false,
       },
       settings: {
         defaultFrom: env('EMAIL_DEFAULT_FROM', 'tommy.damonte@gmail.com'),
