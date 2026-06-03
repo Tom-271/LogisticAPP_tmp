@@ -1,0 +1,7 @@
+/**
+ * consegna controller
+ */
+
+import { factories } from '@strapi/strapi'
+
+export default factories.createCoreController('api::consegna.consegna');

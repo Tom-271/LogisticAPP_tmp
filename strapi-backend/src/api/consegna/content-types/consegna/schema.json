@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "consegnas",
+  "info": {
+    "singularName": "consegna",
+    "pluralName": "consegnas",
+    "displayName": "Consegna",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "Inizio_Consegna": {
+      "type": "datetime"
+    },
+    "Fine_Consegna": {
+      "type": "datetime"
+    },
+    "Titolo": {
+      "type": "string"
+    }
+  }
+}

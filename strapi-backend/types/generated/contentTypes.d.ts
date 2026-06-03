@@ -369,6 +369,37 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiConsegnaConsegna extends Struct.CollectionTypeSchema {
+  collectionName: 'consegnas';
+  info: {
+    description: '';
+    displayName: 'Consegna';
+    pluralName: 'consegnas';
+    singularName: 'consegna';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    Fine_Consegna: Schema.Attribute.DateTime;
+    Inizio_Consegna: Schema.Attribute.DateTime;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::consegna.consegna'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    Titolo: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiMapConfigMapConfig extends Struct.SingleTypeSchema {
   collectionName: 'map_configs';
   info: {
@@ -949,6 +980,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::consegna.consegna': ApiConsegnaConsegna;
       'api::map-config.map-config': ApiMapConfigMapConfig;
       'api::order.order': ApiOrderOrder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
