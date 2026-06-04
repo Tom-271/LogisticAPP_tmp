@@ -44,6 +44,7 @@ export default function BasicWeekView() {
             title: item.Titolo || 'Consegna',
             start: item.Inizio_Consegna,
             end: item.Fine_Consegna,
+            description: item.Descrizione || 'Non hai aggiunto una descirizione.',
           }));
         setEvents(formattedEvents);
       } catch (error) {

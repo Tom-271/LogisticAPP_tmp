@@ -19,6 +19,9 @@
     },
     "Titolo": {
       "type": "string"
+    },
+    "Descrizione": {
+      "type": "text"
     }
   }
 }

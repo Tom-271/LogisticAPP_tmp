@@ -384,6 +384,7 @@ export interface ApiConsegnaConsegna extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    Descrizione: Schema.Attribute.Text;
     Fine_Consegna: Schema.Attribute.DateTime;
     Inizio_Consegna: Schema.Attribute.DateTime;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
