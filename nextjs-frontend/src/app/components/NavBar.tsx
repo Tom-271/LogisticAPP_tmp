@@ -1,15 +1,19 @@
+"use client";
 import Link from "next/link";
 import React from "react";
-import { verifySession } from "../lib/dal";
 import LogOutButton from "./LogOutButton";
-import logo from "@/app/auth/images/bazzurro_delivery.png";;
+import logo from "@/app/auth/images/bazzurro_delivery.png";
 import UserButton from "./UserButton";
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 
-export default async function Navbar() {
-  const result: any = await verifySession().catch(() => null);
-  const isAuth = result?.isAuth;
-  const user = result?.session?.user;
+interface NavbarProps {
+  isAuth?: boolean;
+  nome?: string;
+  cognome?: string;
+}
 
+export default function Navbar({ isAuth, nome, cognome }: NavbarProps) {
   return (
     <nav className="flex flex-col bg-white shadow-md">
       {/* Riga superiore: logo + pulsanti */}
@@ -20,6 +24,13 @@ export default async function Navbar() {
         </Link>
 
         <div className="flex items-center gap-3">
+          <Link
+              href="/auth/prenota_spedizione"
+              className="px-6 py-4 rounded-xl font-medium bg-transparent border-2 border-blue-600 text-blue-600"
+            >
+              <LocalShippingIcon className="mr-1 text-blue-600" />
+              Prenota una spedizione!
+            </Link>
           <Link
             href="/auth/area_operativa"
             className="px-6 py-4 rounded-lg text-blue-600 font-medium border border-transparent"
@@ -40,14 +51,15 @@ export default async function Navbar() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
               </button>
-              <UserButton nome={user?.nome} cognome={user?.cognome} />
+              <UserButton nome={nome} cognome={cognome} />
             </div>
           ) : (
             <Link
               href="/auth/login"
-              className="px-4 py-3 rounded-lg bg-green-600 text-white font-medium shadow-md "
+              className="px-4 py-3 rounded-xl bg-gray-900 text-white font-medium shadow-md "
             >
               Accedi
+              <ArrowCircleRightIcon className="text-white ml-4 mb-1" />
             </Link>
           )}
         </div>

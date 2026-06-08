@@ -12,13 +12,10 @@ import {
 import L from 'leaflet';
 import 'leaflet-semicircle';
 import 'leaflet/dist/leaflet.css';
-import type { LatLngExpression, PathOptions } from 'leaflet';
+import type { LatLngExpression } from 'leaflet';
 
 // === Coordinate ===
 const GENOVA: LatLngExpression = [44.4056, 8.9463];
-
-// === Stili ===
-const fillGreenOptions: PathOptions = { fillColor: 'green', color: 'green' };
 
 // === Componente per il semicerchio ===
 type SemiCircleProps = {
@@ -68,7 +65,7 @@ function SemiCircle({
 }
 
 // === Componente principale ===
-export default function GeMap({ radius = 7500 }: { radius?: number }) {
+export default function GeMap({ radius = 7500, showCircles = false }: { radius?: number; showCircles?: boolean }) {
   return (
     <div className="w-full zindex-0">
       <MapContainer
@@ -82,33 +79,33 @@ export default function GeMap({ radius = 7500 }: { radius?: number }) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* Anello esterno grigio — perimetro tratteggiato */}
-        <SemiCircle
-          key={`outer-${radius}`}
-          center={[44.3970, 8.9463]}
-          radius={radius + 2000}
-          startAngle={-78}
-          stopAngle={-78 + 180}
-          color="#6b7280"
-          fillColor="#6b7280"
-          fillOpacity={0.25}
-          weight={2}
-          dashArray="8 6"
-        />
-
-        {/* Area di copertura principale — blu */}
-        <SemiCircle
-          key={`inner-${radius}`}
-          center={[44.3970, 8.9463]}
-          radius={radius}
-          startAngle={-78}
-          stopAngle={-78 + 180}
-          color="#3b82f6"
-          fillColor="#3b82f6"
-          fillOpacity={0.3}
-          weight={1}
-        />
-
+        {showCircles && (
+          <>
+            <SemiCircle
+              key={`outer-${radius}`}
+              center={[44.3970, 8.9463]}
+              radius={radius + 2000}
+              startAngle={-78}
+              stopAngle={-78 + 180}
+              color="#6b7280"
+              fillColor="#6b7280"
+              fillOpacity={0.25}
+              weight={2}
+              dashArray="8 6"
+            />
+            <SemiCircle
+              key={`inner-${radius}`}
+              center={[44.3970, 8.9463]}
+              radius={radius}
+              startAngle={-78}
+              stopAngle={-78 + 180}
+              color="#3b82f6"
+              fillColor="#3b82f6"
+              fillOpacity={0.3}
+              weight={1}
+            />
+          </>
+        )}
 
       </MapContainer>
     </div>

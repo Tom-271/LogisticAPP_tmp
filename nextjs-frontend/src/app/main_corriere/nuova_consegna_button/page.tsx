@@ -18,7 +18,6 @@ export default function NuovaConsegnaButton({ onSuccess }: { onSuccess: () => vo
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-
     try {
       const response = await fetch("http://localhost:1337/api/consegnas", {
         method: "POST",
@@ -28,7 +27,7 @@ export default function NuovaConsegnaButton({ onSuccess }: { onSuccess: () => vo
 
       if (response.ok) {
         setShowForm(false);
-        if (onSuccess) onSuccess(); // Notifica al calendario di aggiornarsi
+        if (onSuccess) onSuccess(); 
       } else {
         alert("Errore nella creazione della consegna");
       }

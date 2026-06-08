@@ -35,7 +35,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100`}
       >
         <ToastContainer />
-        <NavBar nome={user?.nome} cognome={user?.cognome} />
+        <NavBar isAuth={result?.isAuth} nome={user?.nome} cognome={user?.cognome} />
 
         {children}
       </body>

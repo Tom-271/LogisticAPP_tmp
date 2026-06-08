@@ -11,11 +11,6 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 
-// MUI Icons
-import EuroIcon from '@mui/icons-material/Euro';
-import CallSplitIcon from '@mui/icons-material/CallSplit';
-import CropFreeIcon from '@mui/icons-material/CropFree';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import FastRewindIcon from '@mui/icons-material/FastRewind';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
@@ -71,7 +66,7 @@ export default function WhoAmI() {
 
         {/* MAPPA — fuori dal max-w-3xl, occupa tutta la larghezza */}
         <div className="w-full">
-          <GeMap radius={radius} />
+          <GeMap radius={radius} showCircles />
         </div>
 
         {/* Resto del contenuto di nuovo in colonna leggibile */}

@@ -55,7 +55,6 @@ export default function BasicWeekView() {
   }, []);
 
   // completamnte fatto da claude perchè con l alibreria non ho capito come individuare il click
-  // 
   const handleClick = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     let el = e.target as HTMLElement | null;
     while (el && el !== wrapperRef.current) {
@@ -84,7 +83,6 @@ export default function BasicWeekView() {
           />
         </div>
       </div>
-
 
       {selectedEvent && (
         <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-6 py-4 shadow-sm">
