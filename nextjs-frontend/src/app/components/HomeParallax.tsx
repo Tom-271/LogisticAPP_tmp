@@ -41,11 +41,6 @@ function ParallaxSection({
   );
 }
 
-function PreviewCard() {
-  return (
-    <div className="w-48 h-48 rounded-full bg-gray-200/60 border border-gray-300 shadow-sm backdrop-blur-sm" />
-  );
-}
 
 export default function HomeParallax() {
   
@@ -71,8 +66,7 @@ export default function HomeParallax() {
           </div>
 
           <div className="flex-1 flex flex-wrap gap-6 justify-center lg:justify-end">
-            <PreviewCard />
-            <PreviewCard />
+            
           </div>
         </div>
       </ParallaxSection>
@@ -97,8 +91,7 @@ export default function HomeParallax() {
           </div>
 
           <div className="flex-1 flex flex-wrap gap-6 justify-center lg:justify-start">
-            <PreviewCard />
-            <PreviewCard />
+            
           </div>
         </div>
       </ParallaxSection>

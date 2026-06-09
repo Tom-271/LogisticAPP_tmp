@@ -36,7 +36,6 @@ export default function WhoAmI() {
         if (typeof r === 'number') setRadius(r);
       })
       .catch(() => {
-        // fallback: resta 7500 se la fetch fallisce
       });
   }, []);
 
