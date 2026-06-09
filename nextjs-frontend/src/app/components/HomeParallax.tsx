@@ -48,6 +48,7 @@ function PreviewCard() {
 }
 
 export default function HomeParallax() {
+  
   return (
     <div className="flex flex-col">
       {/* Sezione 1 — Benvenuto */}
@@ -56,7 +57,7 @@ export default function HomeParallax() {
           <div className="flex-1 text-left">
             <h1 className="text-5xl sm:text-6xl font-extrabold text-gray-800 mb-5 leading-tight">
               Benvenuto in<br />
-              <span className="text-blue-600">LogisticAPP</span>
+              <span className="text-blue-600">BazzurroDelivery!</span>
             </h1>
             <p className="text-lg text-gray-500 mb-10 max-w-md">
               Il servizio di delivery perfetto per te. Veloce, affidabile, sempre con te.

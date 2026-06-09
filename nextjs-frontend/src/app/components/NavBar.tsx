@@ -66,7 +66,7 @@ export default function Navbar({ isAuth, nome, cognome }: NavbarProps) {
       </div>
 
       {/* Riga blu sotto: 70% larghezza, centrata */}
-      <div className="w-[70%] h-[0.5px] bg-gray-400 mx-auto mb-3" />
+      <div className="w-[70%] h-[1px] bg-gray-900 mx-auto mb-3 shadow-md" />
     </nav>
   );
 }

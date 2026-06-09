@@ -200,7 +200,7 @@ export default function WhoAmI() {
           {/* Pulsante */}
           <div className="flex justify-center mt-12 mb-6">
             <Link
-              href=""
+              href="/auth/prenota_spedizione"
               className="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg"
             >
               <LocalShippingIcon sx={{ fontSize: 20 }} />
