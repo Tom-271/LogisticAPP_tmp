@@ -5,6 +5,10 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { SchedulerEvent } from '@mui/x-scheduler/models';
 import { StandaloneWeekView } from '@mui/x-scheduler/week-view';
 import { itIT } from '@mui/x-scheduler/locales';
+import EditIcon from '@mui/icons-material/Edit';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import NotesIcon from '@mui/icons-material/Notes';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import { it } from 'date-fns/locale';
 
 const theme = createTheme(
@@ -44,7 +48,8 @@ export default function BasicWeekView() {
             title: item.Titolo || 'Consegna',
             start: item.Inizio_Consegna,
             end: item.Fine_Consegna,
-            description: item.Descrizione || 'Non hai aggiunto una descirizione.',
+            phone_number: item.Numero_Telefono || 'N/A',
+            description: item.Descrizione || 'Non hai aggiunto una descrizione.',
           }));
         setEvents(formattedEvents);
       } catch (error) {
@@ -54,7 +59,6 @@ export default function BasicWeekView() {
     fetchDeliveries();
   }, []);
 
-  // completamnte fatto da claude perchè con l alibreria non ho capito come individuare il click
   const handleClick = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     let el = e.target as HTMLElement | null;
     while (el && el !== wrapperRef.current) {
@@ -85,15 +89,48 @@ export default function BasicWeekView() {
       </div>
 
       {selectedEvent && (
-        <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-6 py-4 shadow-sm">
-          <h2 className="text-base font-bold text-emerald-800 mb-3">{selectedEvent.title}</h2>
-          <div className="flex flex-col gap-1 text-sm text-gray-700">
-            <p><span className="font-semibold">Inizio:</span> {formatDateTime(selectedEvent.start)}</p>
-            <p><span className="font-semibold">Fine:</span> {formatDateTime(selectedEvent.end)}</p>
-            {selectedEvent.description && (
-              <p><span className="font-semibold">Note:</span> {selectedEvent.description}</p>
-            )}
+        <div className="mt-4 rounded-xl border border-blue-300 bg-blue-50 px-6 py-4 shadow-sm">
+          
+          {/* Modifica qui: rimozione di justify-between, pulsante affiancato al titolo */}
+          <div className="flex items-center gap-4 mb-4">
+            <h2 className="text-2xl uppercase font-bold text-orange-500">{selectedEvent.title}</h2>
+            <button className="h-10 w-10 rounded-full border border-orange-500 text-orange-500 flex items-center justify-center">
+              <EditIcon fontSize="small" />
+            </button>
           </div>
+          
+          <div className="flex flex-col gap-2 text-sm text-gray-700">
+            <p className="flex items-center m-0">
+              <ChevronRightIcon className="text-black" />
+              <span className="font-semibold ml-1 text-black">Inizio:</span>
+              <span className="ml-6">{formatDateTime(selectedEvent.start)}</span>
+            </p>
+            <p className="flex items-center m-0">
+              <ChevronRightIcon className="text-black" />
+              <span className="font-semibold ml-1 text-black">Fine:</span>
+              <span className="ml-8">{formatDateTime(selectedEvent.end)}</span>
+            </p>
+          </div>
+          
+          <div className="flex items-center mt-6 gap-6 text-sm text-gray-700">
+            <p className="flex items-center m-0">
+              <ChevronRightIcon className="text-black" />
+              <span className="font-semibold ml-1 text-black">Numero di telefono:</span>
+              <span className="ml-6">{selectedEvent.phone_number}</span>
+            </p>
+            <button className="flex items-center gap-2 bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition-colors">
+              <LocalPhoneIcon fontSize="small" />
+              <span className="font-semibold">Chiama</span>
+            </button>
+          </div>
+
+          {selectedEvent.description && (
+            <div className="mt-6 text-gray-900 flex items-start">
+              <NotesIcon className="mt-0.5 text-gray-900" />
+              <span className="font-semibold ml-1 whitespace-nowrap">Note:</span> 
+              <span className="ml-2">{selectedEvent.description}</span>
+            </div>
+          )}
         </div>
       )}
     </ThemeProvider>
