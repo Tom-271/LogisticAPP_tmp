@@ -5,7 +5,8 @@
       "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\tommy\\\\Desktop\\\\LogisticAPP_tmp\" -Recurse -Force | Select-Object -Property FullName, @{Name='Type';Expression={if\\($_.PSIsContainer\\){'DIR'}else{'FILE'}}} | Format-Table -AutoSize)",
       "PowerShell(head -40)",
       "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\tommy\\\\Desktop\\\\UNI\\\\LogisticAPP_tmp\\\\nextjs-frontend\\\\src\\\\datasets\")",
-      "PowerShell(head -30)"
+      "PowerShell(head -30)",
+      "PowerShell(netstat -ano)"
     ]
   }
 }

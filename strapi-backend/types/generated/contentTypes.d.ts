@@ -373,7 +373,7 @@ export interface ApiConsegnaConsegna extends Struct.CollectionTypeSchema {
   collectionName: 'consegnas';
   info: {
     description: '';
-    displayName: 'Consegna';
+    displayName: 'Consegna_Base';
     pluralName: 'consegnas';
     singularName: 'consegna';
   };
@@ -381,15 +381,24 @@ export interface ApiConsegnaConsegna extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    Cap_consegna: Schema.Attribute.String;
+    Cap_spedizione: Schema.Attribute.String;
+    Citta_consegna: Schema.Attribute.String;
+    Citta_spedizione: Schema.Attribute.String;
+    Codice_fiscale: Schema.Attribute.String;
+    Codice_SDI: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     Descrizione: Schema.Attribute.Text;
     Email: Schema.Attribute.Email;
     Fine_Consegna: Schema.Attribute.DateTime;
-    Indirizzo_CONSEGNA: Schema.Attribute.JSON;
-    Indirizzo_RITIRO: Schema.Attribute.JSON;
-    Inizio_Consegna: Schema.Attribute.DateTime;
+    Fine_fascia_consegna: Schema.Attribute.DateTime;
+    Fine_fascia_ritiro: Schema.Attribute.DateTime;
+    Indirizzo_consegna: Schema.Attribute.JSON;
+    Indirizzo_spedizione: Schema.Attribute.JSON;
+    Inizio_fascia_consegna: Schema.Attribute.DateTime;
+    Inizio_fascia_ritiro: Schema.Attribute.DateTime;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -397,8 +406,13 @@ export interface ApiConsegnaConsegna extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     Numero_Civico: Schema.Attribute.JSON;
+    Partita_IVA: Schema.Attribute.String;
+    PEC_Fatturazione: Schema.Attribute.String;
     phone_number: Schema.Attribute.BigInteger;
+    Provincia_consegna: Schema.Attribute.String;
+    Provincia_spedizione: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    Ragione_Sociale: Schema.Attribute.String;
     Titolo: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

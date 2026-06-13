@@ -8,9 +8,15 @@ export type Credentials = {
   confirmPassword?: string;
   newPassword?: string;
   code?: string;
-  role?:string;
-  name?:string;
-  surname?:string;
+  role?: string;
+  name?: string;
+  surname?: string;
+  tipo_cliente?: string;
+  Ragione_sociale?: string;
+  Partita_IVA?: string;
+  Codice_SDI?: string;
+  PEC_Fatturazione?: string;
+  Indirizzo_sede_legale?: string;
 };
 
 // Form state for form handling and server actions

@@ -23,6 +23,12 @@ export async function signupAction(
   const email = formData.get("email");
   const password = formData.get("password");
   const confirmPassword = formData.get("confirmPassword");
+  const tipo_cliente = formData.get("tipo_cliente") as string || "privato";
+  const Ragione_sociale = formData.get("Ragione_sociale") as string || "";
+  const Partita_IVA = formData.get("Partita_IVA") as string || "";
+  const Codice_SDI = formData.get("Codice_SDI") as string || "";
+  const PEC_Fatturazione = formData.get("PEC_Fatturazione") as string || "";
+  const Indirizzo_sede_legale = formData.get("Indirizzo_sede_legale") as string || "";
 
   const errors: Credentials = {};
 
@@ -54,6 +60,12 @@ export async function signupAction(
     username,
     email,
     password,
+    tipo_cliente,
+    Ragione_sociale,
+    Partita_IVA,
+    Codice_SDI,
+    PEC_Fatturazione,
+    Indirizzo_sede_legale,
   } as Credentials);
 
   // Check for errors in the response
@@ -322,6 +334,12 @@ export async function signinAction(
           role: userRole,
           nome: userData.name,
           cognome: userData.surname,
+          tipo_cliente: userData.tipo_cliente || "privato",
+          Ragione_sociale: userData.Ragione_sociale || "",
+          Partita_IVA: userData.Partita_IVA || "",
+          Codice_SDI: userData.Codice_SDI || "",
+          PEC_Fatturazione: userData.PEC_Fatturazione || "",
+          Indirizzo_sede_legale: userData.Indirizzo_sede_legale || "",
         }
       };
     }

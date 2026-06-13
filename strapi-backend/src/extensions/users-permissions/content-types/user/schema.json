@@ -76,6 +76,26 @@
     },
     "surname": {
       "type": "string"
+    },
+    "tipo_cliente": {
+      "type": "enumeration",
+      "enum": ["privato", "azienda"],
+      "default": "privato"
+    },
+    "Ragione_sociale": {
+      "type": "string"
+    },
+    "Partita_IVA": {
+      "type": "string"
+    },
+    "Codice_SDI": {
+      "type": "string"
+    },
+    "PEC_Fatturazione": {
+      "type": "string"
+    },
+    "Indirizzo_sede": {
+      "type": "string"
     }
   }
 }

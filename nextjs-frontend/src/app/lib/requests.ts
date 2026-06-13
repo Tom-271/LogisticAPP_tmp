@@ -14,6 +14,12 @@ export const signUpRequest = async (credentials: Credentials) => {
         password: credentials.password,
         name: credentials.name,
         surname: credentials.surname,
+        tipo_cliente: credentials.tipo_cliente || "privato",
+        Ragione_sociale: credentials.Ragione_sociale || "",
+        Partita_IVA: credentials.Partita_IVA || "",
+        Codice_SDI: credentials.Codice_SDI || "",
+        PEC_Fatturazione: credentials.PEC_Fatturazione || "",
+        Indirizzo_sede_legale: credentials.Indirizzo_sede_legale || "",
       }
     );
 

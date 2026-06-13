@@ -4,14 +4,14 @@
   "info": {
     "singularName": "consegna",
     "pluralName": "consegnas",
-    "displayName": "Consegna",
+    "displayName": "Consegna_Base",
     "description": ""
   },
   "options": {
     "draftAndPublish": true
   },
   "attributes": {
-    "Inizio_Consegna": {
+    "Inizio_fascia_ritiro": {
       "type": "datetime"
     },
     "Fine_Consegna": {
@@ -29,14 +29,56 @@
     "Email": {
       "type": "email"
     },
-    "Indirizzo_RITIRO": {
+    "Indirizzo_spedizione": {
       "type": "json"
     },
-    "Indirizzo_CONSEGNA": {
+    "Indirizzo_consegna": {
       "type": "json"
     },
     "Numero_Civico": {
       "type": "json"
+    },
+    "Partita_IVA": {
+      "type": "string"
+    },
+    "Ragione_Sociale": {
+      "type": "string"
+    },
+    "Citta_spedizione": {
+      "type": "string"
+    },
+    "Provincia_spedizione": {
+      "type": "string"
+    },
+    "Citta_consegna": {
+      "type": "string"
+    },
+    "Provincia_consegna": {
+      "type": "string"
+    },
+    "Cap_consegna": {
+      "type": "string"
+    },
+    "Cap_spedizione": {
+      "type": "string"
+    },
+    "Codice_fiscale": {
+      "type": "string"
+    },
+    "Fine_fascia_ritiro": {
+      "type": "datetime"
+    },
+    "Inizio_fascia_consegna": {
+      "type": "datetime"
+    },
+    "Fine_fascia_consegna": {
+      "type": "datetime"
+    },
+    "Codice_SDI": {
+      "type": "string"
+    },
+    "PEC_Fatturazione": {
+      "type": "string"
     }
   }
 }

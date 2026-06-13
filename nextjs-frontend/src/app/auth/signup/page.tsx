@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { signupAction } from "@/app/actions/auth";
 import { FormState } from "@/app/lib/definitions";
 import Link from "next/link";
@@ -13,10 +13,9 @@ export default function SignUp() {
     success: false,
   };
 
-  const [state, formAction, isPending] = useActionState(
-    signupAction,
-    initialState
-  );
+  const [state, formAction, isPending] = useActionState(signupAction, initialState);
+  const [isAzienda, setIsAzienda] = useState(false);
+  const [invoiceMode, setInvoiceMode] = useState<"sdi" | "pec">("sdi");
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4 py-12">
@@ -135,6 +134,81 @@ export default function SignUp() {
               )}
             </div>
           </div>
+
+          {/* Separatore */}
+          <hr className="border-gray-200 w-1/2 mx-auto" />
+
+          {/* Toggle Privato / Azienda */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-semibold text-gray-700 text-center">Tipo di account</label>
+            <div className="flex rounded-lg border border-gray-300 overflow-hidden text-sm font-semibold">
+              <button type="button"
+                onClick={() => setIsAzienda(false)}
+                className={`flex-1 py-2 transition-colors ${!isAzienda ? "bg-blue-600 text-white" : "text-gray-500 hover:bg-gray-50"}`}>
+                Privato
+              </button>
+              <button type="button"
+                onClick={() => setIsAzienda(true)}
+                className={`flex-1 py-2 transition-colors ${isAzienda ? "bg-blue-600 text-white" : "text-gray-500 hover:bg-gray-50"}`}>
+                Azienda
+              </button>
+            </div>
+          </div>
+          <input type="hidden" name="tipo_cliente" value={isAzienda ? "azienda" : "privato"} />
+
+          {/* Campi azienda */}
+          {isAzienda && (
+            <div className="flex flex-col space-y-4">
+              <div className="flex flex-col space-y-1">
+                <label className="text-sm font-semibold text-gray-700 text-center">Ragione Sociale</label>
+                <input type="text" name="Ragione_sociale" placeholder="Es. Mario Rossi S.r.l."
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-gray-50 text-gray-800 text-center placeholder-gray-400 placeholder:font-light" />
+              </div>
+
+              <div className="flex flex-col space-y-1">
+                <label className="text-sm font-semibold text-gray-700 text-center">Partita IVA</label>
+                <input type="text" name="Partita_IVA" placeholder="01234567890" maxLength={11}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-gray-50 text-gray-800 text-center placeholder-gray-400 placeholder:font-light" />
+              </div>
+
+              <div className="flex flex-col space-y-1">
+                <label className="text-sm font-semibold text-gray-700 text-center">Indirizzo sede legale</label>
+                <input type="text" name="Indirizzo_sede_legale" placeholder="Via Roma 1, 00100 Roma (RM)"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-gray-50 text-gray-800 text-center placeholder-gray-400 placeholder:font-light" />
+              </div>
+
+              <div className="flex flex-col space-y-2">
+                <label className="text-sm font-semibold text-gray-700 text-center">Ricezione fattura elettronica</label>
+                <div className="flex rounded-lg border border-gray-300 overflow-hidden text-sm font-semibold">
+                  <button type="button" onClick={() => setInvoiceMode("sdi")}
+                    className={`flex-1 py-2 transition-colors ${invoiceMode === "sdi" ? "bg-blue-600 text-white" : "text-gray-500 hover:bg-gray-50"}`}>
+                    Codice SDI
+                  </button>
+                  <button type="button" onClick={() => setInvoiceMode("pec")}
+                    className={`flex-1 py-2 transition-colors ${invoiceMode === "pec" ? "bg-blue-600 text-white" : "text-gray-500 hover:bg-gray-50"}`}>
+                    PEC
+                  </button>
+                </div>
+                {invoiceMode === "sdi" ? (
+                  <div className="flex flex-col space-y-1">
+                    <input type="text" name="Codice_SDI" placeholder="Es. A1B2C3D (7 caratteri)" maxLength={7}
+                      onChange={(e) => (e.target.value = e.target.value.toUpperCase())}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-gray-50 text-gray-800 text-center placeholder-gray-400 placeholder:font-light" />
+                    <p className="text-xs text-gray-400 text-center">
+                      Non ce l&apos;hai?{" "}
+                      <button type="button" onClick={(e) => {
+                        const input = (e.target as HTMLElement).closest(".flex")?.querySelector("input") as HTMLInputElement;
+                        if (input) input.value = "0000000";
+                      }} className="text-blue-500 underline">Usa 0000000</button>
+                    </p>
+                  </div>
+                ) : (
+                  <input type="email" name="PEC_Fatturazione" placeholder="fatturazione@pec.esempio.it"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-gray-50 text-gray-800 text-center placeholder-gray-400 placeholder:font-light" />
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Pulsante Submit */}
           <button
