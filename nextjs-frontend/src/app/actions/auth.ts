@@ -80,6 +80,7 @@ export async function resendConfirmEmailAction(
   // Validate the email
   if (!email) {
     return {
+      errors: {} as Credentials,
       values: { email } as Credentials,
       message: "Email not found",
       success: false,
@@ -100,6 +101,7 @@ export async function resendConfirmEmailAction(
   }
 
   return {
+    errors: {} as Credentials,
     values: { email } as Credentials,
     message: "Confirmation email sent",
     success: true,

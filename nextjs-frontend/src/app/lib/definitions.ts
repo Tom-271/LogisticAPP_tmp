@@ -17,8 +17,8 @@ export type Credentials = {
 export type FormState = {
   errors: Credentials;
   values: Credentials;
-  message?: string;
-  success?: boolean;
+  message: string;
+  success: boolean;
 };
 
 export type SessionPayload = {

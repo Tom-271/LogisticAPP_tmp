@@ -22,6 +22,21 @@
     },
     "Descrizione": {
       "type": "text"
+    },
+    "phone_number": {
+      "type": "biginteger"
+    },
+    "Email": {
+      "type": "email"
+    },
+    "Indirizzo_RITIRO": {
+      "type": "json"
+    },
+    "Indirizzo_CONSEGNA": {
+      "type": "json"
+    },
+    "Numero_Civico": {
+      "type": "json"
     }
   }
 }

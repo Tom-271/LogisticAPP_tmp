@@ -385,7 +385,10 @@ export interface ApiConsegnaConsegna extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     Descrizione: Schema.Attribute.Text;
+    Email: Schema.Attribute.Email;
     Fine_Consegna: Schema.Attribute.DateTime;
+    Indirizzo_CONSEGNA: Schema.Attribute.JSON;
+    Indirizzo_RITIRO: Schema.Attribute.JSON;
     Inizio_Consegna: Schema.Attribute.DateTime;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -393,6 +396,8 @@ export interface ApiConsegnaConsegna extends Struct.CollectionTypeSchema {
       'api::consegna.consegna'
     > &
       Schema.Attribute.Private;
+    Numero_Civico: Schema.Attribute.JSON;
+    phone_number: Schema.Attribute.BigInteger;
     publishedAt: Schema.Attribute.DateTime;
     Titolo: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;

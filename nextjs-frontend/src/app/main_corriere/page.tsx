@@ -1,9 +1,7 @@
 import React from "react";
-import LogOutButton from "@/app/components/LogOutButton";
 import TruckIcon from "@/app/components/TruckIcon";
 import Footer from "@/app/components/Footer";
-import Calendar from "@/app/components/Calendar";
-import NuovaConsegnaButton from "@/app/main_corriere/nuova_consegna_button/page";
+import AgendaView from "@/app/main_corriere/AgendaView";
 
 import { verifySession } from "../lib/dal";
 
@@ -22,8 +20,7 @@ export default async function MainCorriere() {
         </div>
         <div className="flex justify-center mt-6 px-10 pb-10">
           <div className="w-full max-w-6xl">
-            <NuovaConsegnaButton />
-            <Calendar />
+            <AgendaView />
           </div>
         </div>
       </div>
