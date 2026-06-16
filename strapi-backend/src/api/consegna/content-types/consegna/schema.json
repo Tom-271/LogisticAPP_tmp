@@ -79,6 +79,9 @@
     },
     "PEC_Fatturazione": {
       "type": "string"
+    },
+    "Dimensione_Pacco": {
+      "type": "string"
     }
   }
 }

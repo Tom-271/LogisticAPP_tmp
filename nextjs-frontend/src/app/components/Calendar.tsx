@@ -8,14 +8,30 @@ import NotesIcon from '@mui/icons-material/Notes';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import HomeIcon from '@mui/icons-material/Home';
+import MyLocationIcon from '@mui/icons-material/MyLocation';
 
 interface DeliveryEvent {
   id: string;
   title: string;
-  start: string;
-  end: string;
+  inizio_ritiro: string | null;
+  fine_ritiro: string | null;
+  inizio_consegna: string | null;
+  fine_consegna: string | null;
   phone_number?: string;
   description?: string;
+  città_spedizione: string;
+  città_consegna: string;
+  cap_spedizione: string;
+  cap_consegna: string;
+  provincia_spedizione: string;
+  provincia_consegna: string;
+  dimensione_pacco: string;
+  indirizzo_spedizione: string;
+  indirizzo_consegna: string;
 }
 
 const MONTHS_IT = [
@@ -39,9 +55,10 @@ function formatTime(iso: string) {
   return new Date(iso).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
 }
 function formatDateTime(iso: string) {
-  return new Date(iso).toLocaleString('it-IT', {
-    weekday: 'long', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit',
-  });
+  const d = new Date(iso);
+  const data = d.toLocaleDateString('it-IT', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+  const ora  = d.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+  return `${data} ${ora}`;
 }
 
 export default function Calendar({ refreshTrigger = 0 }: { refreshTrigger?: number }) {
@@ -69,15 +86,27 @@ export default function Calendar({ refreshTrigger = 0 }: { refreshTrigger?: numb
     try {
       const res  = await fetch('http://localhost:1337/api/consegnas');
       const json = await res.json();
+      console.log('[Calendar] raw data:', json.data?.[0]);
       const mapped: DeliveryEvent[] = (json.data ?? [])
         .filter((item: any) => item.Inizio_fascia_ritiro || item.Fine_Consegna)
         .map((item: any) => ({
-          id:           item.documentId || String(item.id),
-          title:        item.Titolo || 'Consegna',
-          start:        item.Inizio_fascia_ritiro ?? item.Fine_Consegna,
-          end:          item.Fine_Consegna ?? item.Inizio_fascia_ritiro,
-          phone_number: item.phone_number || 'N/A',
-          description:  item.Descrizione || '',
+          id:              item.documentId || String(item.id),
+          title:           item.Titolo || 'Consegna',
+          inizio_ritiro:   item.Inizio_fascia_ritiro ?? null,
+          fine_ritiro:     item.Fine_fascia_ritiro ?? null,
+          inizio_consegna: item.Inizio_fascia_consegna ?? null,
+          fine_consegna:   item.Fine_fascia_consegna ?? null,
+          phone_number:    item.phone_number || 'N/A',
+          description:     item.Descrizione || '',
+          città_spedizione:  item.Citta_spedizione || 'N/A',
+          città_consegna:   item.Citta_consegna || 'N/A',
+          cap_spedizione:    item.Cap_spedizione || 'N/A',
+          cap_consegna:      item.Cap_consegna || 'N/A',
+          provincia_spedizione:  item.Provincia_spedizione || 'N/A',
+          provincia_consegna:   item.Provincia_consegna || 'N/A',
+          dimensione_pacco:    item.dimensione_pacco || 'N/A',
+          indirizzo_spedizione: item.Indirizzo_spedizione?.value || 'N/A',
+          indirizzo_consegna:   item.Indirizzo_consegna?.value || 'N/A',
         }));
       setEvents(mapped);
     } catch (err) {
@@ -102,8 +131,8 @@ export default function Calendar({ refreshTrigger = 0 }: { refreshTrigger?: numb
 
   const eventsForDate = (date: Date) =>
     events
-      .filter(e => sameDay(new Date(e.start), date))
-      .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+      .filter(e => e.inizio_ritiro && sameDay(new Date(e.inizio_ritiro), date))
+      .sort((a, b) => new Date(a.inizio_ritiro ?? '').getTime() - new Date(b.inizio_ritiro ?? '').getTime());
 
   const jumpToMonth = (month: number) => {
     const d = midnight(new Date(pickerYear, month, 1));
@@ -277,7 +306,7 @@ export default function Calendar({ refreshTrigger = 0 }: { refreshTrigger?: numb
                   selectedEvent?.id === event.id ? 'text-blue-100' : 'text-blue-500'
                 }`}>
                   <AccessTimeIcon fontSize="inherit" />
-                  {formatTime(event.start)}
+                  {event.inizio_ritiro ? formatTime(event.inizio_ritiro) : '—'}
                 </div>
                 <div className={`w-px h-5 shrink-0 ${selectedEvent?.id === event.id ? 'bg-blue-300' : 'bg-gray-200'}`} />
                 <div className={`font-semibold text-sm truncate ${selectedEvent?.id === event.id ? 'text-white' : 'text-gray-800'}`}>
@@ -291,47 +320,107 @@ export default function Calendar({ refreshTrigger = 0 }: { refreshTrigger?: numb
 
       {/* ── Pannello dettaglio evento ── */}
       {selectedEvent && (
-        <div className="mt-4 rounded-2xl border border-blue-300 bg-blue-50 px-6 py-4 shadow-sm">
-          <div className="relative flex items-center justify-center mb-4">
-            <h2 className="text-4xl uppercase font-bold text-blue-900 leading-tight text-center">{selectedEvent.title}</h2>
-            <button className="absolute right-0 flex items-center gap-1.5 text-sm font-semibold text-white bg-blue-700 rounded-full px-4 py-2 hover:bg-blue-800 active:scale-95 transition-all shadow-sm">
-              <EditIcon style={{ fontSize: 16 }} />
-              Modifica
-            </button>
+        <div className="mt-4 rounded-2xl border border-gray-200 bg-white py-5 shadow-sm overflow-hidden">
+
+          {/* Titolo + Modifica */}
+          <div className="relative flex items-center justify-center mb-5 px-6">
+            <h2 className="text-4xl uppercase font-extrabold text-gray-900 leading-tight text-center">{selectedEvent.title}</h2>
+          
           </div>
 
-          <div className="flex flex-col gap-2 text-sm text-gray-700">
-            <p className="flex items-center m-0">
-              <ChevronRightIcon className="text-black" />
-              <span className="font-semibold ml-1 text-black">Inizio:</span>
-              <span className="ml-6">{formatDateTime(selectedEvent.start)}</span>
-            </p>
-            <p className="flex items-center m-0">
-              <ChevronRightIcon className="text-black" />
-              <span className="font-semibold ml-1 text-black">Fine:</span>
-              <span className="ml-8">{formatDateTime(selectedEvent.end)}</span>
-            </p>
+          {/* Riquadri ritiro + consegna — coprono il 90% della card */}
+          <div className="flex flex-row gap-3 mx-[5%]">
+
+            {/* Blu — Ritiro */}
+            <div className="flex-1 flex flex-col items-center gap-3 bg-blue-50 border border-blue-100 rounded-xl p-4 text-center">
+              {/* 4 icone centrate */}
+              <div className="flex items-center justify-center w-full gap-1">
+                <LocalShippingIcon className="text-blue-600" style={{ fontSize: 36 }} />
+                <DoubleArrowIcon className="text-blue-400" style={{ fontSize: 24 }} />
+                <DoubleArrowIcon className="text-blue-400" style={{ fontSize: 24 }} />
+                <HomeIcon className="text-blue-600" style={{ fontSize: 36 }} />
+              </div>
+              <div className="h-px w-3/4 bg-blue-200" />
+              <p className="text-2xl font-bold text-blue-800">Fascia di ritiro</p>
+              <div className="flex flex-col items-center gap-1 text-sm text-blue-700 w-full">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-semibold text-blue-600 text-xs">Inizio</span>
+                  <span>{selectedEvent.inizio_ritiro ? formatDateTime(selectedEvent.inizio_ritiro) : '—'}</span>
+                </div>
+                <span className="text-blue-300 text-lg leading-none my-1">|</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-semibold text-blue-600 text-xs">Fine</span>
+                  <span>{selectedEvent.fine_ritiro ? formatDateTime(selectedEvent.fine_ritiro) : '—'}</span>
+                </div>
+              </div>
+              <div className="h-px w-3/4 bg-blue-200 mt-2" />
+              <div className="flex flex-row items-baseline gap-1 mt-1">
+                <p className="font-bold">{selectedEvent.città_spedizione}</p>
+                <p className="text-sm text-gray-500">({selectedEvent.provincia_spedizione}) - <span className="font-bold text-black">{selectedEvent.cap_spedizione}</span></p>
+              </div>
+              <div className="bg-yellow-100 pb-4 pt-4 pl-5 pr-5 rounded-full border border-1 border-yellow-300">
+              <p className="font-bold">{selectedEvent.indirizzo_spedizione}</p>
+              </div>
+              <p></p>
+            </div>
+
+            {/* Arancione — Consegna */}
+            <div className="flex-1 flex flex-col items-center gap-3 bg-orange-50 border border-orange-100 rounded-xl p-4 text-center">
+              {/* 4 icone centrate */}
+              <div className="flex items-center justify-center w-full gap-1">
+                <LocalShippingIcon className="text-orange-600" style={{ fontSize: 36 }} />
+                <DoubleArrowIcon className="text-orange-400" style={{ fontSize: 24 }} />
+                <DoubleArrowIcon className="text-orange-400" style={{ fontSize: 24 }} />
+                <MyLocationIcon className="text-orange-600" style={{ fontSize: 36 }} />
+              </div>
+              <div className="h-px w-3/4 bg-orange-200" />
+              <p className="text-2xl font-bold text-orange-700">Fascia di consegna</p>
+              <div className="flex flex-col items-center gap-1 text-sm text-orange-700 w-full">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-semibold text-orange-600 text-xs">Inizio</span>
+                  <span>{selectedEvent.inizio_consegna ? formatDateTime(selectedEvent.inizio_consegna) : '—'}</span>
+                </div>
+                <span className="text-orange-300 text-lg leading-none my-1">|</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="font-semibold text-orange-600 text-xs">Fine</span>
+                  <span>{selectedEvent.fine_consegna ? formatDateTime(selectedEvent.fine_consegna) : '—'}</span>
+                </div>
+              </div>
+              <div className="h-px w-3/4 bg-orange-200 mt-2" />
+              <div className="flex flex-row items-baseline gap-1 mt-1">
+                <p className="font-bold">{selectedEvent.città_consegna}</p>
+                <p className="text-sm text-gray-500">({selectedEvent.provincia_consegna}) - <span className="font-bold text-black">{selectedEvent.cap_consegna}</span></p>
+              </div>
+              <div className="bg-yellow-100 pb-4 pt-4 pl-5 pr-5 rounded-full border border-1 border-yellow-300">
+              <p className="font-bold">{selectedEvent.indirizzo_consegna}</p>
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center mt-6 gap-6 text-sm text-gray-700">
-            <p className="flex items-center m-0">
-              <ChevronRightIcon className="text-black" />
-              <span className="font-semibold ml-1 text-black">Numero di telefono:</span>
-              <span className="ml-6">{selectedEvent.phone_number}</span>
-            </p>
-            <button className="flex items-center gap-2 bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 transition-colors">
+          {/* Telefono */}
+          <div className="flex items-center mt-4 gap-4 text-sm text-gray-700 px-6">
+            <div className="flex items-center gap-1.5 flex-1">
+              <LocalPhoneIcon fontSize="small" className="text-gray-400" />
+              <span className="font-semibold text-gray-800">Telefono:</span>
+              <span className="ml-1">{selectedEvent.phone_number}</span>
+            </div>
+            <button className="flex items-center gap-2 bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 active:scale-95 transition-all shadow-sm">
               <LocalPhoneIcon fontSize="small" />
               <span className="font-semibold">Chiama</span>
             </button>
           </div>
 
+          {/* Note */}
           {selectedEvent.description && (
-            <div className="mt-6 text-gray-900 flex items-start">
-              <NotesIcon className="mt-0.5 text-gray-900" />
-              <span className="font-semibold ml-1 whitespace-nowrap">Note:</span>
-              <span className="ml-2">{selectedEvent.description}</span>
+            <div className="mt-4 mx-6 bg-gray-50 border border-gray-100 rounded-xl p-3 flex items-start gap-2 text-sm text-gray-700">
+              <NotesIcon fontSize="small" className="text-gray-400 mt-0.5 shrink-0" />
+              <div>
+                <span className="font-semibold text-gray-800">Note: </span>
+                <span>{selectedEvent.description}</span>
+              </div>
             </div>
           )}
+
         </div>
       )}
     </div>

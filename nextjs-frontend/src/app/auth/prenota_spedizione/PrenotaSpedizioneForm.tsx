@@ -7,12 +7,15 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import PersonIcon from "@mui/icons-material/Person";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import AllInboxIcon from "@mui/icons-material/AllInbox";
 import Loader from "@/app/components/Loader";
 import { creaConsegnaAction } from "@/app/actions/consegna";
 
-const INPUT_CLASS =
-  "w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition";
+const INPUT_CLASS = "w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition";
 const LABEL_CLASS = "text-xs font-semibold text-gray-500 uppercase tracking-wider";
+const timeOf = (dt: string) => dt.split("T")[1] ?? "";
 
 interface Props {
   nome?: string;
@@ -50,6 +53,72 @@ interface NominatimResult {
     county?: string;
     "ISO3166-2-lvl6"?: string;
   };
+}
+  //
+  //
+  // FUNZIONE PER LA GESTIONE DEI TEMPI E DI TUTTE LE VARIE COMBO PER I VARI TEMPI 
+  //
+  //
+ function checkTimeOverlap(start_ritiro: string, end_ritiro: string, start_consegna: string, end_consegna: string) {
+  if(!start_ritiro || !end_ritiro || !start_consegna || !end_consegna) return alert("Tutti i campi data/ora devono essere compilati");
+  else if(start_ritiro > end_ritiro) {
+    alert("L'orario di inizio ritiro deve essere seguente all'orario di fine ritiro.");
+    return false;
+  }
+  else if(start_consegna > end_consegna) {
+    alert("L'orario di inizio consegna deve essere seguente all'orario di fine consegna.");
+    return false;
+  }
+  else if(start_ritiro > start_consegna) {
+    alert("L'orario di inizio ritiro deve essere precedente all'orario di inizio consegna.");
+    return false;
+  }
+  else if(end_ritiro > end_consegna) {
+    alert("L'orario di fine ritiro deve essere precedente all'orario di fine consegna.");
+    return false;
+  }
+  else if(start_ritiro == end_consegna || end_ritiro == start_consegna) {
+    alert("I tempi di ritiro e consegna si sovrappongono.");  
+    return false;
+  }
+  else if(start_ritiro == start_consegna || end_ritiro == end_consegna) {
+    alert("I tempi di ritiro e consegna si sovrappongono.");
+    return false;
+  }
+  else if(start_consegna == end_consegna) {
+    alert("Devi inserire un intervallo di tempo valido per ritiro e consegna.");
+    return false;
+  }
+  else if(end_ritiro > start_consegna) {
+    alert("I tempi di ritiro e consegna si sovrappongono.");
+    return false;
+  }
+  // questo pezzo lo modifichiamo quando chiediamo a Giacomo quali turni lavorativi intende fare?
+  else if (timeOf(start_ritiro) < "09:00" || timeOf(end_ritiro) > "18:30") {
+  alert("La fascia di ritiro deve essere compresa tra le 09:00 e le 18:30.");
+  return false;
+  }
+  else if(timeOf(start_consegna) < "09:00" || timeOf(end_consegna) > "18:30") {
+    alert("La fascia di consegna deve essere compresa tra le 09:00 e le 18:30.");
+    return false;
+  }
+
+  else return true;
+}
+
+//
+//
+// FUNZIONE PER CONTROLLO NUMERO DI TELEFONO
+//
+//
+function checkPhoneNumber(phone: string) {
+  if (!phone) return true; // opzionale
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length < 10) {
+    alert("Il numero di telefono deve avere almeno 10 cifre.");
+    return false;
+  }
+  return true;
 }
 
 function AddressSection({
@@ -265,6 +334,7 @@ export default function PrenotaSpedizioneForm({
     Cognome: cognome,
     Titolo: "",
     Descrizione: "",
+    Dimensione_Pacco: "",
     Email: email,
     Numero_Telefono: "",
     Ragione_sociale,
@@ -289,24 +359,42 @@ export default function PrenotaSpedizioneForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
+
+
+  // funzione maxi per gestire i vari input
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      const result = await creaConsegnaAction(formData as Record<string, unknown>);
-      if (result.success) {
-        setShowSuccess(true);
-        setTimeout(() => { window.location.reload(); }, 2500);
-      } else {
-        alert(`Errore: ${result.error}`);
-      }
-    } catch (error) {
-      console.error("Errore nella richiesta:", error);
-      alert("Errore di connessione con il server");
-    } finally {
-      setIsSubmitting(false);
+  e.preventDefault();
+
+  if (!checkTimeOverlap(
+    formData.Inizio_fascia_ritiro,
+    formData.Fine_fascia_ritiro,
+    formData.Inizio_fascia_consegna,
+    formData.Fine_fascia_consegna,
+  )) return;
+
+  if (!checkPhoneNumber(formData.Numero_Telefono)) return;
+
+  if (isAzienda && invoiceMode === "sdi" && formData.Codice_SDI.length !== 7) {
+    alert("Il codice SDI deve essere di esattamente 7 caratteri.");
+    return;
+  }
+
+  setIsSubmitting(true);
+  try {
+    const result = await creaConsegnaAction(formData as Record<string, unknown>);
+    if (result.success) {
+      setShowSuccess(true);
+      setTimeout(() => { window.location.reload(); }, 2500);
+    } else {
+      alert(`Errore: ${result.error}`);
     }
-  };
+  } catch (error) {
+    console.error("Errore nella richiesta:", error);
+    alert("Errore di connessione con il server");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className="flex flex-col items-center justify-center mt-20 gap-4 px-4 pb-16">
@@ -369,7 +457,7 @@ export default function PrenotaSpedizioneForm({
           <div className="flex flex-col gap-1">
             <label className={LABEL_CLASS}>Codice Fiscale</label>
             <input type="text" placeholder="RSSMRA85A01H501X" value={formData.Codice_fiscale}
-              onChange={(e) => setFormData({ ...formData, Codice_fiscale: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, Codice_fiscale: e.target.value.toUpperCase() })}
               className={INPUT_CLASS} />
           </div>
 
@@ -530,12 +618,66 @@ export default function PrenotaSpedizioneForm({
             </div>
           </div>
 
+          <div className="flex flex-col gap-2">
+            <label className={LABEL_CLASS}>Dimensione del pacco</label>
+            <div className="grid grid-cols-4 gap-2">
+              {(["piccola", "media", "grande", "extra"] as const).map((dim) => (
+                <button
+                  key={dim}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, Dimensione_Pacco: dim })}
+                  className={`py-2.5 rounded-xl text-sm font-semibold capitalize border transition-all ${
+                    formData.Dimensione_Pacco === dim
+                      ? dim === "extra"
+                        ? "bg-orange-500 border-orange-500 text-white shadow"
+                        : "bg-blue-700 border-blue-700 text-white shadow"
+                      : "bg-white border-gray-200 text-gray-500 hover:border-blue-300 hover:text-blue-600"
+                  }`}
+                >
+                  {dim.charAt(0).toUpperCase() + dim.slice(1)}
+                </button>
+              ))}
+            </div>
+            {formData.Dimensione_Pacco && (
+              <div className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm border ${
+                formData.Dimensione_Pacco === "extra"
+                  ? "bg-orange-50 border-orange-200 text-orange-700"
+                  : "bg-blue-50 border-blue-100 text-blue-700"
+              }`}>
+                <span>
+                  {formData.Dimensione_Pacco === "piccola" && <Inventory2Icon fontSize="medium" />}
+                  {formData.Dimensione_Pacco === "media"   && <InventoryIcon fontSize="medium" />}
+                  {formData.Dimensione_Pacco === "grande"  && <AllInboxIcon fontSize="medium" />}
+                  {formData.Dimensione_Pacco === "extra"   && <LocalShippingIcon fontSize="medium" />}
+                </span>
+                <div>
+                  <p className="font-semibold capitalize">{formData.Dimensione_Pacco}</p>
+                  <p className="text-xs opacity-80">
+                    {formData.Dimensione_Pacco === "piccola" && "fino a 0.3 × 0.3 × 0.3 m"}
+                    {formData.Dimensione_Pacco === "media"   && "fino a 0.6 × 0.6 × 0.6 m"}
+                    {formData.Dimensione_Pacco === "grande"  && "fino a 1.0 × 1.0 × 1.0 m"}
+                    {formData.Dimensione_Pacco === "extra"   && "oltre 1.0 × 1.0 × 1.0 m — descrizione obbligatoria"}
+                  </p>
+                </div>
+              </div>
+            )}
+            {formData.Dimensione_Pacco === "extra" && (
+              <p className="text-xs text-orange-500">Per i pacchi extra è richiesta una descrizione dettagliata.</p>
+            )}
+          </div>
+
           <div className="flex flex-col gap-1">
-            <label className={LABEL_CLASS}>Note</label>
-            <textarea rows={4} placeholder="Inserisci i dettagli (max 300 parole)…"
+            <label className={LABEL_CLASS}>
+              Note{formData.Dimensione_Pacco === "extra" && <span className="text-orange-500 ml-1">*obbligatoria per pacco Extra</span>}
+            </label>
+            <textarea
+              rows={4}
+              placeholder={formData.Dimensione_Pacco === "extra" ? "Descrivi dimensioni, peso e particolarità del pacco…" : "Inserisci i dettagli (max 300 parole)…"}
               value={formData.Descrizione}
+              required={formData.Dimensione_Pacco === "extra"}
               onChange={(e) => setFormData({ ...formData, Descrizione: e.target.value })}
-              className={`${INPUT_CLASS} resize-none`} />
+              className={`${INPUT_CLASS} resize-none ${formData.Dimensione_Pacco === "extra" ? "border-orange-300 focus:ring-orange-400" : ""}`}
+            />
           </div>
             
             

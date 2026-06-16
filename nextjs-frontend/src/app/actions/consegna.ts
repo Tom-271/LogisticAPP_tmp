@@ -40,6 +40,7 @@ export async function creaConsegnaAction(data: Record<string, unknown>) {
       Ragione_Sociale:        data.Ragione_sociale ?? data.Ragione_Sociale,
       Codice_SDI:             data.Codice_SDI,
       PEC_Fatturazione:       data.PEC_Fatturazione,
+      Dimensione_Pacco:       data.Dimensione_Pacco,
     };
 
     // Rimuove undefined, null e stringhe vuote
