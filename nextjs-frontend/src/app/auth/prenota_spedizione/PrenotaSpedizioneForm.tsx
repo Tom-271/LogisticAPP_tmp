@@ -8,6 +8,7 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import PersonIcon from "@mui/icons-material/Person";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import Loader from "@/app/components/Loader";
+import { creaConsegnaAction } from "@/app/actions/consegna";
 
 const INPUT_CLASS =
   "w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition";
@@ -25,6 +26,7 @@ interface Props {
   Indirizzo_sede_legale?: string;
   Codice_fiscale?: string;
   Descrizione?: string;
+  jwt?: string;
 }
 
 interface AddressFields {
@@ -264,6 +266,7 @@ export default function PrenotaSpedizioneForm({
     Titolo: "",
     Descrizione: "",
     Email: email,
+    Numero_Telefono: "",
     Ragione_sociale,
     Codice_fiscale: "",
     Partita_IVA,
@@ -283,20 +286,25 @@ export default function PrenotaSpedizioneForm({
     Citta_consegna: "",
     Provincia_consegna: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
-      const response = await fetch("http://localhost:1337/api/consegnas", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: formData }),
-      });
-      if (!response.ok) {
-        alert("Errore nella creazione della consegna");
+      const result = await creaConsegnaAction(formData as Record<string, unknown>);
+      if (result.success) {
+        setShowSuccess(true);
+        setTimeout(() => { window.location.reload(); }, 2500);
+      } else {
+        alert(`Errore: ${result.error}`);
       }
     } catch (error) {
       console.error("Errore nella richiesta:", error);
+      alert("Errore di connessione con il server");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -343,11 +351,19 @@ export default function PrenotaSpedizioneForm({
             </div>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <label className={LABEL_CLASS}>Email</label>
-            <input type="email" placeholder="mario.rossi@gmail.com" value={formData.Email}
-              onChange={(e) => setFormData({ ...formData, Email: e.target.value })}
-              className={INPUT_CLASS} />
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex flex-col gap-1">
+              <label className={LABEL_CLASS}>Email</label>
+              <input type="email" placeholder="mario.rossi@gmail.com" value={formData.Email}
+                onChange={(e) => setFormData({ ...formData, Email: e.target.value })}
+                className={INPUT_CLASS} />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className={LABEL_CLASS}>Telefono</label>
+              <input type="tel" placeholder="+39 333 1234567" value={formData.Numero_Telefono}
+                onChange={(e) => setFormData({ ...formData, Numero_Telefono: e.target.value })}
+                className={INPUT_CLASS} />
+            </div>
           </div>
 
           <div className="flex flex-col gap-1">
@@ -542,14 +558,27 @@ export default function PrenotaSpedizioneForm({
             document.body
           )}
           <div className="flex justify-end pt-2">
-            <button type="submit"
-              className="flex items-center gap-2 px-6 py-2.5 bg-green-500 text-white text-sm font-semibold rounded-xl shadow-sm w-full sm:w-auto justify-center">
+            <button type="submit" disabled={isSubmitting}
+              className="flex items-center gap-2 px-6 py-2.5 bg-green-500 text-white text-sm font-semibold rounded-xl shadow-sm w-full sm:w-auto justify-center disabled:opacity-60">
               <CheckIcon style={{ fontSize: 16 }} />
-              Conferma Spedizione
+              {isSubmitting ? "Invio in corso…" : "Conferma Spedizione"}
             </button>
           </div>
         </form>
       </div>
+
+      {showSuccess && typeof window !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-4 bg-white rounded-2xl shadow-2xl px-10 py-8">
+            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-100">
+              <CheckCircleIcon className="text-green-500" style={{ fontSize: 40 }} />
+            </div>
+            <p className="text-lg font-bold text-gray-800">Inserimento effettuato correttamente</p>
+            <p className="text-sm text-gray-400">La pagina si aggiornerà tra un momento…</p>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }

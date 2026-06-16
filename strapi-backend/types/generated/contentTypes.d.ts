@@ -378,7 +378,7 @@ export interface ApiConsegnaConsegna extends Struct.CollectionTypeSchema {
     singularName: 'consegna';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     Cap_consegna: Schema.Attribute.String;
@@ -947,6 +947,7 @@ export interface PluginUsersPermissionsUser
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    Codice_SDI: Schema.Attribute.String;
     confirmationToken: Schema.Attribute.String & Schema.Attribute.Private;
     confirmed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     createdAt: Schema.Attribute.DateTime;
@@ -957,6 +958,7 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    Indirizzo_sede: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -965,19 +967,24 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.Private;
     name: Schema.Attribute.String;
     orders: Schema.Attribute.Relation<'oneToMany', 'api::order.order'>;
+    Partita_IVA: Schema.Attribute.String;
     password: Schema.Attribute.Password &
       Schema.Attribute.Private &
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    PEC_Fatturazione: Schema.Attribute.String;
     provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    Ragione_sociale: Schema.Attribute.String;
     resetPasswordToken: Schema.Attribute.String & Schema.Attribute.Private;
     role: Schema.Attribute.Relation<
       'manyToOne',
       'plugin::users-permissions.role'
     >;
     surname: Schema.Attribute.String;
+    tipo_cliente: Schema.Attribute.Enumeration<['privato', 'azienda']> &
+      Schema.Attribute.DefaultTo<'privato'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

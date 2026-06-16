@@ -2,7 +2,7 @@
 import Link from "next/link";
 import React from "react";
 import LogOutButton from "./LogOutButton";
-import logo from "@/app/auth/images/bazzurro_delivery.png";
+import logo from "@/app/auth/images/LOGO.png";
 import UserButton from "./UserButton";
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
@@ -20,7 +20,7 @@ export default function Navbar({ isAuth, nome, cognome }: NavbarProps) {
       <div className="flex items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/" className="text-xl font-semibold cursor-pointer">
-          <img src={logo.src} alt="Bazzurro Delivery" className="h-8 w-auto" />
+          <img src={logo.src} alt="Bazzurro Delivery" className="h-20 w-auto" />
         </Link>
 
         <div className="flex items-center gap-3">

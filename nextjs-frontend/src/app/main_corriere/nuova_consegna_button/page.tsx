@@ -7,6 +7,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import CloseIcon from "@mui/icons-material/Close";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import { creaConsegnaAction } from "@/app/actions/consegna";
 
 const INPUT_CLASS =
   "w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition";
@@ -258,16 +259,12 @@ export default function NuovaConsegnaButton({ onSuccess }: { onSuccess?: () => v
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:1337/api/consegnas", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: formData }),
-      });
-      if (response.ok) {
+      const result = await creaConsegnaAction(formData as Record<string, unknown>);
+      if (result.success) {
         close();
         if (onSuccess) onSuccess();
       } else {
-        alert("Errore nella creazione della consegna");
+        alert(`Errore: ${result.error}`);
       }
     } catch (error) {
       console.error("Errore nella richiesta:", error);

@@ -4,6 +4,7 @@ import PrenotaSpedizioneForm from "./PrenotaSpedizioneForm";
 export default async function Page() {
   const { session } = await verifySession();
   const user = (session as any)?.user;
+  const jwt = (session as any)?.jwt ?? "";
 
   return (
     <PrenotaSpedizioneForm
@@ -16,6 +17,7 @@ export default async function Page() {
       Codice_SDI={user?.Codice_SDI ?? ""}
       PEC_Fatturazione={user?.PEC_Fatturazione ?? ""}
       Indirizzo_sede_legale={user?.Indirizzo_sede_legale ?? ""}
+      jwt={jwt}
     />
   );
 }

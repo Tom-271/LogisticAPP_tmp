@@ -70,13 +70,13 @@ export default function Calendar({ refreshTrigger = 0 }: { refreshTrigger?: numb
       const res  = await fetch('http://localhost:1337/api/consegnas');
       const json = await res.json();
       const mapped: DeliveryEvent[] = (json.data ?? [])
-        .filter((item: any) => item.Inizio_Consegna && item.Fine_Consegna)
+        .filter((item: any) => item.Inizio_fascia_ritiro || item.Fine_Consegna)
         .map((item: any) => ({
           id:           item.documentId || String(item.id),
           title:        item.Titolo || 'Consegna',
-          start:        item.Inizio_Consegna,
-          end:          item.Fine_Consegna,
-          phone_number: item.Numero_Telefono || 'N/A',
+          start:        item.Inizio_fascia_ritiro ?? item.Fine_Consegna,
+          end:          item.Fine_Consegna ?? item.Inizio_fascia_ritiro,
+          phone_number: item.phone_number || 'N/A',
           description:  item.Descrizione || '',
         }));
       setEvents(mapped);
