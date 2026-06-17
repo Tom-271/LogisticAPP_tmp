@@ -54,56 +54,108 @@ interface NominatimResult {
     "ISO3166-2-lvl6"?: string;
   };
 }
-  //
-  //
-  // FUNZIONE PER LA GESTIONE DEI TEMPI E DI TUTTE LE VARIE COMBO PER I VARI TEMPI 
-  //
-  //
- function checkTimeOverlap(start_ritiro: string, end_ritiro: string, start_consegna: string, end_consegna: string) {
-  if(!start_ritiro || !end_ritiro || !start_consegna || !end_consegna) return alert("Tutti i campi data/ora devono essere compilati");
-  else if(start_ritiro > end_ritiro) {
-    alert("L'orario di inizio ritiro deve essere seguente all'orario di fine ritiro.");
+// ── Festivi e fasce orarie ──────────────────────────────────────────────────
+
+function getEasterMonday(year: number): Date {
+  const a = year % 19, b = Math.floor(year / 100), c = year % 100;
+  const d = Math.floor(b / 4), e = b % 4;
+  const f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4), k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m2 = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m2 + 114) / 31);
+  const day = ((h + l - 7 * m2 + 114) % 31) + 1;
+  const easter = new Date(year, month - 1, day);
+  easter.setDate(easter.getDate() + 1); // Lunedì di Pasqua
+  return easter;
+}
+
+const FIXED_HOLIDAYS: [number, number][] = [
+  [1, 1], [1, 6], [4, 25], [5, 1], [6, 2],
+  [8, 15], [11, 1], [12, 8], [12, 25], [12, 26],
+];
+
+function isHoliday(d: Date): boolean {
+  const m = d.getMonth() + 1, day = d.getDate();
+  if (FIXED_HOLIDAYS.some(([fm, fd]) => fm === m && fd === day)) return true;
+  const em = getEasterMonday(d.getFullYear());
+  return d.getMonth() === em.getMonth() && d.getDate() === em.getDate();
+}
+
+function isPrefestivo(d: Date): boolean {
+  const next = new Date(d);
+  next.setDate(next.getDate() + 1);
+  return isHoliday(next);
+}
+
+function parseLocalDate(isoStr: string): Date {
+  const [y, m, day] = isoStr.split("T")[0].split("-").map(Number);
+  return new Date(y, m - 1, day);
+}
+
+function getSlotRules(d: Date): { allowed: boolean; maxTime: string } {
+  const dow = d.getDay();
+  if (dow === 0 || isHoliday(d)) return { allowed: false, maxTime: "" };
+  if (dow === 6 || isPrefestivo(d))  return { allowed: true,  maxTime: "13:00" };
+  return { allowed: true, maxTime: "20:00" };
+}
+
+// ── Controllo fasce orarie e sovrapposizioni ────────────────────────────────
+
+function checkTimeOverlap(start_ritiro: string, end_ritiro: string, start_consegna: string, end_consegna: string) {
+  if (!start_ritiro || !end_ritiro || !start_consegna || !end_consegna)
+    return alert("Tutti i campi data/ora devono essere compilati");
+
+  const rulesRitiro   = getSlotRules(parseLocalDate(start_ritiro));
+  const rulesConsegna = getSlotRules(parseLocalDate(start_consegna));
+
+  if (!rulesRitiro.allowed) {
+    alert("Il ritiro non è disponibile nella data selezionata (domenica o giorno festivo).");
     return false;
   }
-  else if(start_consegna > end_consegna) {
-    alert("L'orario di inizio consegna deve essere seguente all'orario di fine consegna.");
+  if (!rulesConsegna.allowed) {
+    alert("La consegna non è disponibile nella data selezionata (domenica o giorno festivo).");
     return false;
   }
-  else if(start_ritiro > start_consegna) {
+  if (start_ritiro > end_ritiro) {
+    alert("L'orario di inizio ritiro deve essere precedente all'orario di fine ritiro.");
+    return false;
+  }
+  if (start_consegna > end_consegna) {
+    alert("L'orario di inizio consegna deve essere precedente all'orario di fine consegna.");
+    return false;
+  }
+  if (start_ritiro > start_consegna) {
     alert("L'orario di inizio ritiro deve essere precedente all'orario di inizio consegna.");
     return false;
   }
-  else if(end_ritiro > end_consegna) {
+  if (end_ritiro > end_consegna) {
     alert("L'orario di fine ritiro deve essere precedente all'orario di fine consegna.");
     return false;
   }
-  else if(start_ritiro == end_consegna || end_ritiro == start_consegna) {
-    alert("I tempi di ritiro e consegna si sovrappongono.");  
-    return false;
-  }
-  else if(start_ritiro == start_consegna || end_ritiro == end_consegna) {
+  if (start_ritiro === end_consegna || end_ritiro === start_consegna ||
+      start_ritiro === start_consegna || end_ritiro === end_consegna) {
     alert("I tempi di ritiro e consegna si sovrappongono.");
     return false;
   }
-  else if(start_consegna == end_consegna) {
-    alert("Devi inserire un intervallo di tempo valido per ritiro e consegna.");
+  if (start_consegna === end_consegna) {
+    alert("Devi inserire un intervallo di tempo valido per la consegna.");
     return false;
   }
-  else if(end_ritiro > start_consegna) {
+  if (end_ritiro > start_consegna) {
     alert("I tempi di ritiro e consegna si sovrappongono.");
     return false;
   }
-  // questo pezzo lo modifichiamo quando chiediamo a Giacomo quali turni lavorativi intende fare?
-  else if (timeOf(start_ritiro) < "09:00" || timeOf(end_ritiro) > "18:30") {
-  alert("La fascia di ritiro deve essere compresa tra le 09:00 e le 18:30.");
-  return false;
-  }
-  else if(timeOf(start_consegna) < "09:00" || timeOf(end_consegna) > "18:30") {
-    alert("La fascia di consegna deve essere compresa tra le 09:00 e le 18:30.");
+  if (timeOf(start_ritiro) < "09:00" || timeOf(end_ritiro) > rulesRitiro.maxTime) {
+    alert(`La fascia di ritiro deve essere compresa tra le 09:00 e le ${rulesRitiro.maxTime}.`);
     return false;
   }
-
-  else return true;
+  if (timeOf(start_consegna) < "09:00" || timeOf(end_consegna) > rulesConsegna.maxTime) {
+    alert(`La fascia di consegna deve essere compresa tra le 09:00 e le ${rulesConsegna.maxTime}.`);
+    return false;
+  }
+  return true;
 }
 
 //

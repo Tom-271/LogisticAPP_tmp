@@ -13,6 +13,7 @@ import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import HomeIcon from '@mui/icons-material/Home';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 interface DeliveryEvent {
   id: string;
@@ -32,6 +33,11 @@ interface DeliveryEvent {
   dimensione_pacco: string;
   indirizzo_spedizione: string;
   indirizzo_consegna: string;
+  partita_iva : string;
+  codice_sdi: string;
+  PEC_fatturazione: string;
+  codice_fiscale: string;
+  ragione_sociale: string;
 }
 
 const MONTHS_IT = [
@@ -70,7 +76,10 @@ export default function Calendar({ refreshTrigger = 0 }: { refreshTrigger?: numb
   const [selectedEvent, setSelectedEvent] = React.useState<DeliveryEvent | null>(null);
   const [showPicker, setShowPicker]     = React.useState(false);
   const [pickerYear, setPickerYear]     = React.useState(realToday.getFullYear());
+  const [showSpecifiche, setShowSpecifiche] = React.useState(false);
   const pickerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => { setShowSpecifiche(false); }, [selectedEvent]);
 
   // When navigation moves the center, select the center day and clear event detail
   const goBack = () => {
@@ -104,9 +113,14 @@ export default function Calendar({ refreshTrigger = 0 }: { refreshTrigger?: numb
           cap_consegna:      item.Cap_consegna || 'N/A',
           provincia_spedizione:  item.Provincia_spedizione || 'N/A',
           provincia_consegna:   item.Provincia_consegna || 'N/A',
-          dimensione_pacco:    item.dimensione_pacco || 'N/A',
+          dimensione_pacco:    item.Dimensione_Pacco || 'N/A',
           indirizzo_spedizione: item.Indirizzo_spedizione?.value || 'N/A',
           indirizzo_consegna:   item.Indirizzo_consegna?.value || 'N/A',
+          partita_iva:         item.Partita_IVA || 'N/A',
+          codice_sdi:          item.Codice_SDI || 'N/A',
+          PEC_fatturazione:     item.PEC_Fatturazione || 'N/A',
+          codice_fiscale:      item.Codice_fiscale || 'N/A',
+          ragione_sociale:     item.Ragione_Sociale || 'N/A',
         }));
       setEvents(mapped);
     } catch (err) {
@@ -397,29 +411,99 @@ export default function Calendar({ refreshTrigger = 0 }: { refreshTrigger?: numb
             </div>
           </div>
 
-          {/* Telefono */}
-          <div className="flex items-center mt-4 gap-4 text-sm text-gray-700 px-6">
-            <div className="flex items-center gap-1.5 flex-1">
-              <LocalPhoneIcon fontSize="small" className="text-gray-400" />
-              <span className="font-semibold text-gray-800">Telefono:</span>
-              <span className="ml-1">{selectedEvent.phone_number}</span>
-            </div>
-            <button className="flex items-center gap-2 bg-green-500 text-white py-2 px-4 rounded-full hover:bg-green-600 active:scale-95 transition-all shadow-sm">
-              <LocalPhoneIcon fontSize="small" />
-              <span className="font-semibold">Chiama</span>
-            </button>
-          </div>
-
-          {/* Note */}
+          {/* Note — sotto le due card */}
           {selectedEvent.description && (
-            <div className="mt-4 mx-6 bg-gray-50 border border-gray-100 rounded-xl p-3 flex items-start gap-2 text-sm text-gray-700">
-              <NotesIcon fontSize="small" className="text-gray-400 mt-0.5 shrink-0" />
+            <div className="mx-[5%] mt-4 flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4">
+              <NotesIcon className="text-amber-500 mt-0.5 shrink-0" />
               <div>
-                <span className="font-semibold text-gray-800">Note: </span>
-                <span>{selectedEvent.description}</span>
+                <p className="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1">Note</p>
+                <p className="text-sm text-gray-700 leading-relaxed">{selectedEvent.description}</p>
               </div>
             </div>
           )}
+
+          {/* Specifiche cliente — collapsible */}
+          <div className="mt-4 mx-[5%] mb-1">
+            <button
+              onClick={() => setShowSpecifiche(v => !v)}
+              className={`w-full flex items-center justify-between px-5 py-3 border transition-all duration-200 ${
+                showSpecifiche
+                  ? 'bg-gray-900 border-gray-900 text-white rounded-t-xl'
+                  : 'bg-gray-50 border-gray-200 text-gray-900 hover:bg-gray-100 rounded-xl'
+              }`}
+            >
+              <span className="text-base font-bold tracking-wide">Specifiche cliente</span>
+              <ExpandMoreIcon
+                style={{
+                  transform: showSpecifiche ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.25s',
+                  fontSize: 24,
+                }}
+              />
+            </button>
+
+            {showSpecifiche && (
+              <div className="border border-t-0 border-gray-200 rounded-b-xl px-5 py-4 flex flex-col gap-3 bg-white">
+                {/* Telefono */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ChevronRightIcon fontSize="small" className="text-gray-400 shrink-0" />
+                    <div>
+                      <p className="text-[11px] text-gray-400 uppercase tracking-wider leading-none mb-0.5">Telefono</p>
+                      <p className="font-semibold text-gray-900 text-sm">{selectedEvent.phone_number}</p>
+                    </div>
+                  </div>
+                  <button className="flex items-center gap-1.5 bg-green-500 text-white py-1.5 px-4 rounded-full hover:bg-green-600 active:scale-95 transition-all shadow-sm text-sm font-semibold">
+                    <LocalPhoneIcon style={{ fontSize: 16 }} />
+                    Chiama
+                  </button>
+                </div>
+
+                {/* Dimensione pacco */}
+                {selectedEvent.dimensione_pacco && selectedEvent.dimensione_pacco !== 'N/A' && (
+                  <div className="flex items-center gap-2">
+                    <ChevronRightIcon fontSize="small" className="text-gray-400 shrink-0" />
+                    <div>
+                      <p className="text-[11px] text-gray-400 uppercase tracking-wider leading-none mb-0.5">Dimensione pacco</p>
+                      <p className="font-semibold text-gray-900 text-sm">{selectedEvent.dimensione_pacco}</p>
+                    </div>
+                  </div>
+
+                )}
+                {selectedEvent.codice_fiscale && selectedEvent.codice_fiscale !== 'N/A' && (
+                  <div className="flex items-center gap-2">
+                    <ChevronRightIcon fontSize="small" className="text-gray-400 shrink-0" />
+                    <div>
+                      <p className="text-[11px] text-gray-400 uppercase tracking-wider leading-none mb-0.5">Codice Fiscale</p>
+                      <p className="font-semibold text-gray-900 text-sm">{selectedEvent.codice_fiscale}</p>
+                    </div>
+                  </div>
+
+                )}
+                {selectedEvent.codice_sdi && selectedEvent.codice_sdi !== 'N/A' && (
+                  <div className="flex items-center gap-2">
+                    <ChevronRightIcon fontSize="small" className="text-gray-400 shrink-0" />
+                    <div>
+                      <p className="text-[11px] text-gray-400 uppercase tracking-wider leading-none mb-0.5">Codice_SDI</p>
+                      <p className="font-semibold text-gray-900 text-sm">{selectedEvent.codice_sdi}</p>
+                    </div>
+                  </div>
+
+                )}
+                {selectedEvent.ragione_sociale && selectedEvent.ragione_sociale !== 'N/A' && (
+                  <div className="flex items-center gap-2">
+                    <ChevronRightIcon fontSize="small" className="text-gray-400 shrink-0" />
+                    <div>
+                      <p className="text-[11px] text-gray-400 uppercase tracking-wider leading-none mb-0.5">Ragione_sociale</p>
+                      <p className="font-semibold text-gray-900 text-sm">{selectedEvent.ragione_sociale}</p>
+                    </div>
+                  </div>
+
+                )}
+              </div>
+              
+            )}
+          </div>
 
         </div>
       )}
